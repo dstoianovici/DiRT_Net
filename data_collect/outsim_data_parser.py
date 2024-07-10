@@ -23,7 +23,7 @@ class OutsimDataParser_6X_3U(Dataset):
         return xu.to_numpy(), nX.to_numpy()
 
     def read_csv(self, data_csv):
-        self.data = pd.read_csv(data_csv)
+        self.data = pd.read_csv(data_csv, dtype=np.float32)
 
     def plot_trajectory(self):
         self.data.plot(title=self.data_name, kind = 'line', x = 'pos_x', y='pos_y')
