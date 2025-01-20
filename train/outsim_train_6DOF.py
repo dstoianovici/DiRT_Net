@@ -96,7 +96,7 @@ def main():
     writer = SummaryWriter('runs/dirtAI_trainer_6x3u_{}'.format(timestamp))
     epoch_number = 0
 
-    EPOCHS = 5000
+    EPOCHS = 500
 
     best_vloss = 1_000_000.
 
@@ -145,7 +145,7 @@ def main():
         # Track best performance, and save the model's state
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
-            model_path = 'model_{}_{}'.format(timestamp, epoch_number)
+            model_path = 'models/model_{}_{}'.format(timestamp, epoch_number)
             torch.save(model.state_dict(), model_path)
 
         epoch_number += 1
