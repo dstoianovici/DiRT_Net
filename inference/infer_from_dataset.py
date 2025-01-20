@@ -6,15 +6,32 @@ sys.path.append('./')
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from train.outsim_train_6DOF import Train6DOF_Net
-
-sys.path.append('./')
 from data_collect.outsim_data_parser import OutsimDataParser_6X_3U
 from data_collect.outsim_data_collect import OutSim_Data_Collect
 from train.outsim_train_6DOF import Train6DOF_Net
 
+
+# Load Model Weights
 model_path = "models\model_20250106_201842_10"
+model = Train6DOF_Net()
+model.load_state_dict(torch.load(model_path))
+# model = torch.load(model_path)
+model.eval()
+# print(model)
 
-model = torch.load(model_path)
+# Prepare Training Data (Using Validation Data before  new collect)
+# validation_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Validation Data")
+test_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Validation Data")
+input_tensor = torch.tensor(test_data.state_and_control.values)
 
-print(model)
+# Infer on Data
+with torch.no_grad():
+    output = model(input_tensor)
+
+output_np = output.detach().numpy()
+
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+ax.plot(test_data.next_state['pos_x'], test_data.next_state['pos_y'], color='tab:blue', label="truth")
+ax.plot(output_np[:,0], output_np[:,1], color='tab:red', label="inference")
+plt.show()
