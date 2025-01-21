@@ -96,7 +96,7 @@ def main():
     writer = SummaryWriter('runs/dirtAI_trainer_6x3u_{}'.format(timestamp))
     epoch_number = 0
 
-    EPOCHS = 500
+    EPOCHS = 5000
 
     best_vloss = 1_000_000.
 

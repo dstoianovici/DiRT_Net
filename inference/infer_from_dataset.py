@@ -12,7 +12,8 @@ from train.outsim_train_6DOF import Train6DOF_Net
 
 
 # Load Model Weights
-model_path = "models\model_20250106_201842_10"
+# model_path = "models\model_20250106_201238_195" # BEST SO FAR
+model_path = "models\model_20250120_221815_4603"
 model = Train6DOF_Net()
 model.load_state_dict(torch.load(model_path))
 # model = torch.load(model_path)
@@ -20,8 +21,9 @@ model.eval()
 # print(model)
 
 # Prepare Training Data (Using Validation Data before  new collect)
-# validation_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Validation Data")
-test_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Validation Data")
+# validation_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Test Data")
+# test_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Test Data")
+test_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-21-46.csv", "Test Data")
 input_tensor = torch.tensor(test_data.state_and_control.values)
 
 # Infer on Data
