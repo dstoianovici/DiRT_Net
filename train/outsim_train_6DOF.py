@@ -17,11 +17,13 @@ class Train6DOF_Net(nn.Module):
 
         # self.flatten = nn.Flatten(star)
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(9,6),
+            nn.Linear(9,81),
             nn.ReLU(True),
-            nn.Linear(6, 6),
+            nn.Linear(81, 729),
             nn.ReLU(True),
-            nn.Linear(6, 6)
+            nn.Linear(729, 81),
+            nn.ReLU(True),
+            nn.Linear(81, 6)
         )
     
     def forward(self, x):
@@ -33,13 +35,14 @@ class Train6DOF_Net(nn.Module):
 def train_one_epoch(epoch_index, tb_writer, data_loader, loss_fn, optimizer, model, device):
     train_loss = []
     model.train()
+    model.to(device)
     for i, data in enumerate(data_loader):
         state, next_state = data
         state.to(device)
         next_state.to(device)
         optimizer.zero_grad()
-        next_state_pred = model(state)
-        loss = loss_fn(next_state_pred, next_state)
+        next_state_pred = model(state.to(device))
+        loss = loss_fn(next_state_pred.to(device), next_state.to(device))
         loss.backward()
         optimizer.step()
 
@@ -52,23 +55,23 @@ def train_one_epoch(epoch_index, tb_writer, data_loader, loss_fn, optimizer, mod
 
 def main():
     #Get Training Data and Visualize
-    training_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-21-46.csv", "Training Data")
+    training_data = OutsimDataParser_6X_3U("data\OutSim_24-Jan-25-00-14-17.csv", "Training Data")
     validation_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Validation Data")
     # training_data.plot_trajectory()
     # validation_data.plot_trajectory()
 
-    # device = (
-    #     "cuda"
-    #     if torch.cuda.is_available()
-    #     else "mps"
-    #     if torch.backends.mps.is_available()
-    #     else "cpu"
-    # )
-    device = "cpu"
+    device = (
+        "cuda"
+        if torch.cuda.is_available()
+        else "mps"
+        if torch.backends.mps.is_available()
+        else "cpu"
+    )
+    # device = "cpu"
     print(f"Using Device: {device}")
 
     #Create Data Loaders
-    BATCH_SIZE = 10
+    BATCH_SIZE = 1000
     training_data_loader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle=True)
     validation_data_loader = DataLoader(validation_data, batch_size=BATCH_SIZE, shuffle=True)
 
@@ -125,8 +128,8 @@ def main():
         vlosses = []
         for i, vdata in enumerate(validation_data_loader):
             vinputs, vlabels = vdata
-            voutputs = model(vinputs)
-            vloss = loss_fn(voutputs, vlabels)
+            voutputs = model(vinputs.to(device))
+            vloss = loss_fn(voutputs.to(device), vlabels.to(device))
             running_vloss += vloss
             vlosses.append(vloss.detach().cpu().numpy())
 

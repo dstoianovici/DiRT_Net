@@ -13,7 +13,7 @@ from train.outsim_train_6DOF import Train6DOF_Net
 
 # Load Model Weights
 # model_path = "models\model_20250106_201238_195" # BEST SO FAR
-model_path = "models\model_20250120_221815_4603"
+model_path = "models\model_20250123_235403_147"
 model = Train6DOF_Net()
 model.load_state_dict(torch.load(model_path))
 # model = torch.load(model_path)
