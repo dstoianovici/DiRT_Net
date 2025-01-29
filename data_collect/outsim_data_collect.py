@@ -96,11 +96,11 @@ class OutSim_Data_Collect():
     def read_data(self):
         print("Waiting for OutSim Data.")
         while True:
-            try:
-                data = self.data_socket.recv(512) # 64 Float64 values in extradata = 3
+            data = self.data_socket.recv(512) # 64 Float64 values in extradata = 3
+            print(f"Data Len: {len(data)}" )
 
+            if(len(data) > 0):
                 outsim_pack = struct.unpack('64f', data[0:256])
-
                 # Curtesy of fab1701 https://steamcommunity.com/app/310560/discussions/0/481115363869500839/?l=norwegian
                 self._time.append(outsim_pack[0]) # Time
                 self._lap_time.append(outsim_pack[1]) # Time of Current Lap
@@ -140,7 +140,7 @@ class OutSim_Data_Collect():
                 self._gforce_lon.append(outsim_pack[35]) # G-Force Longitudinal
                 self._num_lap.append(outsim_pack[36]) # Current Lap
                 self._eng_rpm.append(outsim_pack[37]) # Speed of Engine [rpm / 10]
-            except:
+            else:
                 print("No data currently being recieved.")
 
             if keyboard.is_pressed("q"):

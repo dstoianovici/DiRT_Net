@@ -55,8 +55,8 @@ def train_one_epoch(epoch_index, tb_writer, data_loader, loss_fn, optimizer, mod
 
 def main():
     #Get Training Data and Visualize
-    training_data = OutsimDataParser_6X_3U("data\OutSim_24-Jan-25-00-14-17.csv", "Training Data")
-    validation_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Validation Data")
+    training_data = OutsimDataParser_6X_3U("data\OutSim_29-Jan-25-14-19-57.csv", "Training Data")
+    validation_data = OutsimDataParser_6X_3U("data\OutSim_24-Jan-25-00-14-17.csv", "Validation Data")
     # training_data.plot_trajectory()
     # validation_data.plot_trajectory()
 
@@ -67,7 +67,6 @@ def main():
         if torch.backends.mps.is_available()
         else "cpu"
     )
-    # device = "cpu"
     print(f"Using Device: {device}")
 
     #Create Data Loaders
@@ -98,6 +97,14 @@ def main():
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     writer = SummaryWriter('runs/dirtAI_trainer_6x3u_{}'.format(timestamp))
     epoch_number = 0
+
+    # Create Model Dir and specific run dirs
+    parent_dir = os.path.abspath(os.getcwd())
+    model_dir = os.path.join(parent_dir,'models')
+    model_training_run_dir = os.path.join(model_dir,timestamp)
+    if not os.path.exists(model_training_run_dir):
+        print(f"Creating data directory: {model_training_run_dir}")
+        os.mkdir(model_training_run_dir)
 
     EPOCHS = 5000
 
@@ -148,7 +155,7 @@ def main():
         # Track best performance, and save the model's state
         if avg_vloss < best_vloss:
             best_vloss = avg_vloss
-            model_path = 'models/model_{}_{}'.format(timestamp, epoch_number)
+            model_path = f"models/{timestamp}/model_{epoch_number}"
             torch.save(model.state_dict(), model_path)
 
         epoch_number += 1
