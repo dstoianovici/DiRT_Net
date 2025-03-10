@@ -22,8 +22,8 @@ model.eval()
 
 # Prepare Training Data (Using Validation Data before  new collect)
 # validation_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Test Data")
-test_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Test Data")
-# test_data = OutsimDataParser_6X_3U("data\OutSim_24-Jan-25-00-14-17.csv", "Test Data")
+# test_data = OutsimDataParser_6X_3U("data\OutSim_13-Feb-24-21-31-19.csv", "Test Data")
+test_data = OutsimDataParser_6X_3U("data\OutSim_24-Jan-25-00-14-17.csv", "Test Data")
 input_tensor = torch.tensor(test_data.state_and_control.values)
 
 # Infer on Data
